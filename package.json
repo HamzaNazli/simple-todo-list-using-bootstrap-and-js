@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf docs",
     "dev": "parcel serve index.html --out-dir ./docs",
-    "build": "rm -rf docs && parcel build index.html 404.html --out-dir docs"
+    "build": "rm -rf docs && parcel build index.html 404.html --out-dir docs --public-url /simple-todo-list-using-bootstrap-and-js/"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4"
