@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             todoItems.push(itemObj);
             setLocalStorage(todoItems);
+            getList(todoItems);
         }
         inptItem.value = "";
     });
