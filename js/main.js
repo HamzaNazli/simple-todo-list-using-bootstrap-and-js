@@ -9,7 +9,7 @@ let todoItems = [];
 function getList(todoItems){
     lstItems.innerHTML= "";
 
-    if(todoItems.length > 0){
+    if(todoItems !== null && todoItems.length > 0 ){
         todoItems.forEach(item => {
             let liTag = `          
             <li class="list-group-item d-flex justify-content-between align-items-center fs-4">
@@ -22,8 +22,14 @@ function getList(todoItems){
             </li>`;
             lstItems.insertAdjacentHTML("beforeend", liTag);
         });
+    } else {
+        let liTag = `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+               <span>No Records Found.</span>
+        </li>`;
+        lstItems.insertAdjacentHTML("beforeend", liTag);
     }
-}
+} 
 
 function getLocalStorage(){
     const todoLocalStorage = localStorage.getItem("todoItems");
@@ -49,10 +55,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 name: itemName,
                 isDone: false,
             };
-
+            todoItems = todoItems || [];
             todoItems.push(itemObj);
             setLocalStorage(todoItems);
             getList(todoItems);
+        }else{
+            alert('A task cannot be empty. Please enter a Task......');
         }
         inptItem.value = "";
     });
