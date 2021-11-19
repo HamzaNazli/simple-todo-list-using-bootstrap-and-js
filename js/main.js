@@ -6,21 +6,36 @@ const lstItems =  document.querySelector("#lstItems");
 
 let todoItems = [];
 
+function removeItem(item){
+    if(todoItems){
+    const ListElms = document.querySelectorAll(".list-group-item");
+    ListElms.forEach((ListEl)=> {
+        ListEl.querySelector("#dlt").addEventListener("click", (e)=>{
+            e.preventDefault();
+
+            ListEl.remove();
+            todoItems.splice(todoItems.indexOf(item),1);
+            setLocalStorage(todoItems);
+        });
+    });
+}
+}
+
 function getList(todoItems){
     lstItems.innerHTML= "";
-
+    
     if(todoItems !== null && todoItems.length > 0 ){
         todoItems.forEach(item => {
             let liTag = `          
             <li class="list-group-item d-flex justify-content-between align-items-center fs-4">
-            <span>${item.name}</span>
+            <span id="liText">${item.name}</span>
             <span>
               <a><i class="bi bi-check-square"></i></a>
-              <a><i class="bi bi-pencil-square "></i></a>
-              <a><i class="bi bi-x-square "></i></a>
+              <a><i class="bi bi-x-square" id="dlt"></i></a>
             </span>
             </li>`;
             lstItems.insertAdjacentHTML("beforeend", liTag);
+            removeItem(item);
         });
     } else {
         let liTag = `
@@ -28,6 +43,7 @@ function getList(todoItems){
                <span>No Records Found.</span>
         </li>`;
         lstItems.insertAdjacentHTML("beforeend", liTag);
+
     }
 } 
 

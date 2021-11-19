@@ -32,3 +32,12 @@ li{
 li:hover{
     background-color: rgba(0, 0, 0,0.05);
 }
+
+.list-group-item:hover{
+    background-color: rgba(169, 169, 169, 0.25);
+}
+
+.completed{
+    text-decoration: line-through;
+    color: rgba(0, 0, 0, 0.5);
+}
