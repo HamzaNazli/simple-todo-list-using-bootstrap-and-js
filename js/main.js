@@ -6,16 +6,69 @@ const lstItems =  document.querySelector("#lstItems");
 
 let todoItems = [];
 
+function statusFromStorage(){
+    if(todoItems){
+        const ListElms = document.querySelectorAll(".list-group-item");
+        todoItems.forEach((item)=> {     
+            ListElms.forEach((ListEl)=> {
+                const txtId = ListEl.querySelector(".li-text");
+                if(item.isDone && txtId.getAttribute('data-time') == item.addedTime ){
+                txtId.classList.add("completed");
+            } 
+            });   
+        });
+    }
+}
+
+function statusToStorage(item){
+    const itemIndex = todoItems.indexOf(item);
+    const currentItem = todoItems[itemIndex];
+    todoItems.splice(itemIndex,1,currentItem);
+    setLocalStorage(todoItems);
+}
+
+function setItemStatus(item){
+    if(todoItems){
+        const ListElms = document.querySelectorAll(".list-group-item");
+        ListElms.forEach((ListEl)=> {
+            ListEl.querySelector(".stts-liEl").addEventListener("click", (e)=>{
+                e.preventDefault();
+                const txtId = ListEl.querySelector(".li-text");    
+                if(txtId.getAttribute('data-time') == item.addedTime){
+                    txtId.classList.toggle("completed");
+                    if(txtId.classList.contains("completed")){
+                        item.isDone = true;
+                    }else{
+                        item.isDone = false;
+                    }
+                    statusToStorage(item);
+                                      
+                }
+            });
+        });
+    }
+}
+
+function removeItemFromStorage(item){
+    const removeIndex = todoItems.indexOf(item);
+            // console.log(removeIndex+""+item.name);
+            todoItems.splice(removeIndex,1);
+            setLocalStorage(todoItems);
+}
+
 function removeItem(item){
     if(todoItems){
     const ListElms = document.querySelectorAll(".list-group-item");
     ListElms.forEach((ListEl)=> {
-        ListEl.querySelector("#dlt").addEventListener("click", (e)=>{
+        ListEl.querySelector(".dlt-liEl").addEventListener("click", (e)=>{
             e.preventDefault();
-
+            const txtId = ListEl.querySelector(".li-text");
+            if(txtId.getAttribute('data-time') == item.addedTime){
+                removeItemFromStorage(item);
+            }
             ListEl.remove();
-            todoItems.splice(todoItems.indexOf(item),1);
-            setLocalStorage(todoItems);
+            getLocalStorage();
+            statusFromStorage();
         });
     });
 }
@@ -28,23 +81,25 @@ function getList(todoItems){
         todoItems.forEach(item => {
             let liTag = `          
             <li class="list-group-item d-flex justify-content-between align-items-center fs-4">
-            <span id="liText">${item.name}</span>
+            <span class="li-text" data-time=${item.addedTime}>${item.name}</span>
             <span>
-              <a><i class="bi bi-check-square"></i></a>
-              <a><i class="bi bi-x-square" id="dlt"></i></a>
+              <a class="stts-liEl"><i class="bi bi-check-square"></i></a>
+              <a class="dlt-liEl"><i class="bi bi-x-square"></i></a>
             </span>
             </li>`;
             lstItems.insertAdjacentHTML("beforeend", liTag);
             removeItem(item);
-        });
+            setItemStatus(item);
+            
+        });        
     } else {
         let liTag = `
         <li class="list-group-item d-flex justify-content-between align-items-center">
                <span>No Records Found.</span>
         </li>`;
         lstItems.insertAdjacentHTML("beforeend", liTag);
-
     }
+    
 } 
 
 function getLocalStorage(){
@@ -70,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const itemObj = {
                 name: itemName,
                 isDone: false,
-            };
+                addedTime: new Date().getTime()
+            }
             todoItems = todoItems || [];
             todoItems.push(itemObj);
             setLocalStorage(todoItems);
@@ -83,5 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     getLocalStorage();
 
+    statusFromStorage();
 });
 
