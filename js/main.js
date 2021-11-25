@@ -2,9 +2,26 @@
 const frmItem = document.querySelector("#frmItem");
 const inptItem = document.querySelector("#inptItem");
 const lstItems =  document.querySelector("#lstItems");
+const switchBox = document.getElementById("flexSwitchCheckDefault");
 
 
 let todoItems = [];
+
+function changeTheme(){
+    const isChecked=switchBox.checked;
+        
+    const themeChangeElms = document.querySelectorAll(".theme-change-elements");
+
+    themeChangeElms.forEach((el)=>{
+        if(isChecked){
+            el.classList.add("bg-dark");
+            el.classList.add("text-white");
+        }else{
+            el.classList.remove("bg-dark");
+            el.classList.remove("text-white");
+        }
+    }); 
+}
 
 function statusFromStorage(){
     if(todoItems){
@@ -51,7 +68,6 @@ function setItemStatus(item){
 
 function removeItemFromStorage(item){
     const removeIndex = todoItems.indexOf(item);
-            // console.log(removeIndex+""+item.name);
             todoItems.splice(removeIndex,1);
             setLocalStorage(todoItems);
 }
@@ -80,7 +96,7 @@ function getList(todoItems){
     if(todoItems !== null && todoItems.length > 0 ){
         todoItems.forEach(item => {
             let liTag = `          
-            <li class="list-group-item d-flex justify-content-between align-items-center fs-4">
+            <li class="list-group-item d-flex justify-content-between align-items-center fs-4 theme-change-elements">
             <span class="li-text" data-time=${item.addedTime}>${item.name}</span>
             <span>
               <a class="stts-liEl"><i class="bi bi-check-square"></i></a>
@@ -89,17 +105,17 @@ function getList(todoItems){
             </li>`;
             lstItems.insertAdjacentHTML("beforeend", liTag);
             removeItem(item);
-            setItemStatus(item);
-            
+            setItemStatus(item);    
+            changeTheme();    
         });        
     } else {
         let liTag = `
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li class="list-group-item d-flex justify-content-between align-items-center theme-change-elements">
                <span>No Records Found.</span>
         </li>`;
         lstItems.insertAdjacentHTML("beforeend", liTag);
     }
-    
+ 
 } 
 
 function getLocalStorage(){
@@ -110,6 +126,7 @@ function getLocalStorage(){
     }
 
     getList(todoItems);
+    changeTheme();
 }
 
 function setLocalStorage(todoItems){
@@ -140,5 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
     getLocalStorage();
 
     statusFromStorage();
+
+    switchBox.addEventListener("change", (e) => {
+        e.preventDefault();
+        changeTheme();
+    });
+
 });
 
